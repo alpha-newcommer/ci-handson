@@ -4,7 +4,7 @@ services:
 
   # Database
   db:
-    image: postgres:latest
+    image: postgres:9.6.10
     container_name: postgresql
 
     ports:
@@ -19,14 +19,13 @@ services:
     volumes:
       - ./volumes/postgres/data:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d
-      - /etc/localtime:/etc/localtime:ro
 
     restart: always
 
 
   # SoanrQube
   sonarqube:
-    image: sonarqube:latest
+    image: sonarqube:6.7.5
     container_name: sonarqube
     
     ports:
@@ -41,34 +40,29 @@ services:
 
     volumes:
       - ./volumes/sonarqube/data:/opt/sonarqube/data
-      # sonarqube用のdatabase作成
-      - ./volumes/sonarqube/extensions:/opt/sonarqube/extensions
-      - /etc/localtime:/etc/localtime:ro
 
     restart: always
 
 
-  # MavenRepository
-  mavenRepository:
-    image: mattgruter/artifactory
-    container_name: artifactory
+  # ihRepository
+  ihRepository:
+    image: sonatype/nexus3:3.14.0
+    container_name: nexus
 
     ports:
-     - "8081:8080"
+     - "8081:8081"
     networks:
       - cinet
 
     volumes:
-      - ./volumes/artifactory/data:/opt/jfrog/artifactory/data
-      - ./volumes/artifactory/logs:/opt/jfrog/artifactory/logs
-      - /etc/localtime:/etc/localtime:ro
+      - ./nexus-data:/nexus-data
 
     restart: always
 
 
   # Git Server
   gitbucket:
-    image: takezoe/gitbucket
+    image: gitbucket/gitbucket:4.29.0
     container_name: gitbucket
 
     ports:
@@ -78,12 +72,11 @@ services:
 
     volumes:
       - ./volumes/gitbucket:/gitbucket
-      - /etc/localtime:/etc/localtime:ro
 
 
   # Jenkins
   jenkins:
-    image: jenkins:latest
+    image: jenkins:2.60.3
     container_name: jenkins
 
     ports:
@@ -93,39 +86,6 @@ services:
 
     volumes:
       - ./volumes/jenkins_home/maven:/var/maven
-      - /etc/localtime:/etc/localtime:ro
-
-    restart: always
-
-
-  # IRCD Chat Server
-  ircdServer:
-    image: goldeneggg/centos-ngircd
-    container_name: ngircd
-
-    ports:
-      - "6667:6667"
-
-
-  # Redmine Server
-  redmine:
-    image: redmine
-
-    ports:
-      - "3000:3000"
-
-    environment:
-      REDMINE_DB_POSTGRES: db
-      REDMINE_DB_USERNAME: postgres
-      REDMINE_DB_PASSWORD: p0stgres
-      REDMINE_DB_DATABASE: redmine
-    networks:
-      - cinet
-
-    volumes:
-      - ./volumes/redmine/files:/usr/src/redmine/files
-      - ./volumes/redmine/plugins:/usr/src/redmine/plugins
-      - /etc/localtime:/etc/localtime:ro
 
     restart: always
 
