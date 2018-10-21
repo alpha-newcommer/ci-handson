@@ -50,6 +50,7 @@ services:
     image: registry:2.6
     ports:
       - 5000:5000
+
     volumes:
       - "./volumes/registry-data:/var/lib/registry"
 
@@ -70,7 +71,7 @@ services:
 
   # Jenkins
   jenkins:
-    image: jenkins:2.60.3
+    image: jenkins/jenkins:2.147
     container_name: jenkins
 
     ports:
@@ -79,10 +80,25 @@ services:
       - cinet
 
     volumes:
-      - ./volumes/jenkins_home/maven:/var/maven
+      - ./volumes/jenkins_home/data:/var/postgres_data
 
     restart: always
 
+  worker:
+    container_name: worker
+    image: docker:18.05.0-ce-dind
+    privileged: true
+    tty: true
+    depends_on:
+      - jenkins
+      - registry 
+    expose:
+      - 7946
+      - 7946/udp
+      - 4789/udp
+    networks:
+      - cinet
+    command: "--insecure-registry registry:5000"
 
 networks:
   cinet:
