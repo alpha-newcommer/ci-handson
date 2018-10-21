@@ -46,18 +46,12 @@ services:
 
   # ihRepository
   ihRepository:
-    image: sonatype/nexus3:3.14.0
-    container_name: nexus
-
+    container_name: registry
+    image: registry:2.6
     ports:
-     - "8081:8081"
-    networks:
-      - cinet
-
+      - 5000:5000
     volumes:
-      - ./nexus-data:/nexus-data
-
-    restart: always
+      - "./volumes/registry-data:/var/lib/registry"
 
 
   # Git Server
