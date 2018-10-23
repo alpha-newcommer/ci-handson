@@ -19,4 +19,7 @@ RUN  apt-get update \
     && apt-get update \
     && apt-get install -y docker-ce
 
+# add docker group
+RUN addgroup -S docker && adduser jenkins docker
+
 USER jenkins
