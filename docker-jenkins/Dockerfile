@@ -1,9 +1,9 @@
-ROM jenkins/jenkins:2.147
+FROM jenkins/jenkins:2.147
 
 USER root
 
 RUN  apt-get update \
-    && apt-get install -y git curl \
+    && apt-get install -y git \
       lsb-release \
       apt-transport-https \
       ca-certificates \
