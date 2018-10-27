@@ -81,7 +81,9 @@ services:
       - "8080:8080"
     networks:
       - cinet
-
+      
+    command: "--insecure-registry registry:5000"
+    
     volumes:
       - ./volumes/jenkins_home/data:/var/postgres_data
       - /var/run/docker.sock:/var/run/docker.sock
