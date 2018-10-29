@@ -76,14 +76,11 @@ services:
     image: cihandson/dockerjenkins:latest
     container_name: jenkins
     user: root
-    privileged: true
 
     ports:
       - "8080:8080"
     networks:
       - cinet
-      
-    command: "--insecure-registry registry:5000"
     
     volumes:
       - ./volumes/jenkins_home/data:/var/postgres_data
