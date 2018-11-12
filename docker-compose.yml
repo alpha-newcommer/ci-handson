@@ -3,7 +3,7 @@ version: '3'
 services:
 
   # Database
-  db:
+  cidb:
     image: postgres:9.6.10
     container_name: postgresql
 
@@ -20,8 +20,6 @@ services:
       - ./volumes/postgres/data:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d
 
-    restart: always
-
 
   # SoanrQube
   sonarqube:
@@ -36,12 +34,10 @@ services:
     environment:
         - SONARQUBE_JDBC_USERNAME=postgres
         - SONARQUBE_JDBC_PASSWORD=p0stgres
-        - SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonar
+        - SONARQUBE_JDBC_URL=jdbc:postgresql://cidb:5432/sonar
 
     volumes:
       - ./volumes/sonarqube/data:/opt/sonarqube/data
-
-    restart: always
 
 
   # インハウス Dockerリポジトリ
@@ -83,11 +79,9 @@ services:
       - cinet
     
     volumes:
-      - ./volumes/jenkins_home/data:/var/postgres_data
+      - /var/postgres_data:/var/postgres_data
       - /var/run/docker.sock:/var/run/docker.sock
       - ./volumes/registry-data:/var/registry-data
-
-    restart: always
 
 networks:
   cinet:
